@@ -1,0 +1,23 @@
+	machine:
+  java:
+    version: oraclejdk8
+  services:
+    - docker
+
+dependencies:
+	pre:
+		
+deployment:
+	hub:
+	    branch: master
+	    commands:
+	      - sbt assembly
+	      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS quay.io
+	      - docker build --no-cache -t="quay.io/ntoggle/skywalk:snapshot" .
+	      - docker push quay.io/ntoggle/skywalk:snapshot
+	      - docker build -t="quay.io/ntoggle/skywalk:`cut  -d\"\\"\" -f 2 version.sbt`" .
+	      - docker push quay.io/ntoggle/skywalk:`cut  -d"\"" -f 2 version.sbt`
+	  publish:
+	    branch: master
+	    commands:
+	      - sbt publish
