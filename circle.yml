@@ -6,7 +6,12 @@
 
 dependencies:
 	pre:
-		
+	# Install sbt 0.13.7 (via tee to account for sudo madness)
+	  - echo "deb http://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+	  - sudo apt-get update && sudo apt-get install sbt
+	override:
+		- sbt ";test:compile ;it:compile"
+
 deployment:
 	hub:
 	    branch: master
